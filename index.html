@@ -20,6 +20,7 @@
         }
       },
       scene: {
+        init: init,
         preload: preload,
         create: create,
         update: update
@@ -27,6 +28,14 @@
     };
 
     var game = new Phaser.Game(config);
+
+    var numStars = 11;
+
+    function init() {
+      this.userActions = [];
+      this.starCount = 0;
+      this.starText;
+    }
 
     function preload() {
       this.load.image('sky', 'assets/sky.png');
@@ -83,7 +92,7 @@
       // Stars
       stars = this.physics.add.group({
         key: 'star',
-        repeat: 11,
+        repeat: numStars-1,
         setXY: { x: 12, y: 0, stepX: 70 }
       });
 
@@ -95,9 +104,14 @@
 
       function collectStar(player, star) {
         star.disableBody(true, true);
+        this.starCount++;
+        this.starText.setText('Stars: ' + this.starCount);
       }
 
       this.physics.add.overlap(player, stars, collectStar, null, this);
+
+      // Star Text
+      this.starText = this.add.text(100, 16, 'Stars: '+this.starCount, { fontSize: '32px', fill: '#000' });
     }
 
     function update() {
@@ -123,6 +137,10 @@
         player.setVelocityY(-330);
       }
 
+      // End
+      if (numStars == this.starCount) {
+        this.scene.restart();
+      }
     }
   </script>
 
