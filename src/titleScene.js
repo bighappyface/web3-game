@@ -34,16 +34,17 @@ class TitleScene extends Phaser.Scene {
   end() {}
 
   connectWallet() {
-    this.provider.send("eth_requestAccounts", []).then((a) => {
+    this.provider.send('eth_requestAccounts', []).then((a) => {
       this.account = a[0]
       this.add.text(200, 350, 'wallet: ' + this.account, {
         fontSize: '16px',
         fill: '#000',
       })
-      this.text.on('pointerdown', () => this.scene.switch('gameScene'))
+      this.text.on('pointerdown', () =>
+        this.scene.start('gameScene', { account: this.account }),
+      )
       this.text.setText('start game')
-    });
-
+    })
   }
 }
 

@@ -9,11 +9,12 @@ class GameScene extends Phaser.Scene {
     super({ key: 'gameScene' })
   }
 
-  init() {
+  init(data) {
     this.userActions = []
     this.starCount = 0
     this.starText
     this.player
+    this.account = data.account
   }
 
   preload() {
@@ -84,15 +85,21 @@ class GameScene extends Phaser.Scene {
     function collectStar(player, star) {
       star.disableBody(true, true)
       this.starCount++
-      this.starText.setText('Stars: ' + this.starCount)
+      this.starText.setText('stars: ' + this.starCount)
     }
 
     this.physics.add.overlap(this.player, stars, collectStar, null, this)
 
     // Star Text
-    this.starText = this.add.text(100, 16, 'Stars: ' + this.starCount, {
+    this.starText = this.add.text(100, 16, 'stars: ' + this.starCount, {
       fontSize: '32px',
       fill: '#000',
+    })
+
+    // Account Text
+    this.add.text(100, 550, 'account: ' + this.account, {
+      fontSize: '16px',
+      fill: '#fff',
     })
   }
 
