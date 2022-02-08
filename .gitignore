@@ -27,3 +27,5 @@ node_modules
 coverage
 coverage.json
 typechain
+
+dist/
