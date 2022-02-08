@@ -1,11 +1,16 @@
 import skyImg from './assets/sky.png'
+import { ethers } from 'ethers'
 
 class TitleScene extends Phaser.Scene {
   constructor() {
     super({ key: 'titleScene' })
   }
 
-  init() {}
+  init() {
+    this.provider = new ethers.providers.Web3Provider(window.ethereum)
+    this.account
+    this.text
+  }
 
   preload() {
     this.load.image('sky', skyImg)
@@ -16,20 +21,29 @@ class TitleScene extends Phaser.Scene {
     this.add.image(400, 300, 'sky')
 
     // Text
-    const text = this.add.text(200, 300, 'web3 game - click to start', {
+    this.text = this.add.text(200, 300, 'connect wallet', {
       fontSize: '32px',
       fill: '#000',
     })
-    text.setInteractive({ useHandCursor: true })
-    text.on('pointerdown', () => this.clickButton())
+    this.text.setInteractive({ useHandCursor: true })
+    this.text.on('pointerdown', () => this.connectWallet())
   }
 
   update() {}
 
   end() {}
 
-  clickButton() {
-    this.scene.switch('gameScene')
+  connectWallet() {
+    this.provider.send("eth_requestAccounts", []).then((a) => {
+      this.account = a[0]
+      this.add.text(200, 350, 'wallet: ' + this.account, {
+        fontSize: '16px',
+        fill: '#000',
+      })
+      this.text.on('pointerdown', () => this.scene.switch('gameScene'))
+      this.text.setText('start game')
+    });
+
   }
 }
 
