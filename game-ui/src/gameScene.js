@@ -3,10 +3,18 @@ import platformImg from './assets/platform.png'
 import starImg from './assets/star.png'
 import bombImg from './assets/bomb.png'
 import dudeImg from './assets/dude.png'
+import axios from 'axios'
+
+const eventsCenter = new Phaser.Events.EventEmitter()
 
 class GameScene extends Phaser.Scene {
   constructor() {
     super({ key: 'gameScene' })
+  }
+
+  updateStarCount(total) {
+    this.starCount = total
+    this.starText.setText('stars: ' + this.starCount)
   }
 
   init(data) {
@@ -100,6 +108,14 @@ class GameScene extends Phaser.Scene {
     this.add.text(100, 550, 'account: ' + this.account, {
       fontSize: '16px',
       fill: '#fff',
+    })
+
+    // Load Player Stars
+    eventsCenter.on('loadStars', this.updateStarCount, this)
+
+    let url = 'http://127.0.0.1:6868/api/players/' + this.account
+    axios.get(url).then((response) => {
+      eventsCenter.emit('loadStars', response.data.stars)
     })
   }
 
